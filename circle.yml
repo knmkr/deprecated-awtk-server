@@ -1,0 +1,9 @@
+dependencies:
+  override:
+    - go get -t -d -v ./...
+    - go build -v
+
+test:
+  override:
+    - go test -v -race ./...
+    - test -z "$(gofmt -d . | tee /dev/stderr)"
