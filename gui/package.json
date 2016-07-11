@@ -19,6 +19,7 @@
   "homepage": "https://github.com/knmkr/wgx",
   "devDependencies": {
     "electron-prebuilt": "^1.2.0",
-    "electron-packager": "^7.3.0"
+    "electron-packager": "^7.3.0",
+    "superagent": "^2.0.0"
   }
 }

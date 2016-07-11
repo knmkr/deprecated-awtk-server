@@ -8,6 +8,9 @@ const {BrowserWindow} = electron;
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
+// TODO: DRY
+var addr = "localhost:1323";
+
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({width: 800, height: 600});
@@ -51,3 +54,19 @@ function createWindow() {
 
     // In this file you can include the rest of your app's specific main process
     // code. You can also put them in separate files and require them here.
+
+    // TODO: close safely
+    var spawn = require('child_process').spawn,
+        runserver = spawn('script/wgx', ['runserver', addr]);
+
+    runserver.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+    });
+
+    runserver.stderr.on('data', function (data) {
+        console.log('stderr: ' + data);
+    });
+
+    runserver.on('close', function (code) {
+        console.log('child process exited with code ' + code);
+    });
