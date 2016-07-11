@@ -1,6 +1,8 @@
 dependencies:
   override:
     - go get -t -d -v ./...
+    - rm -rf ~/.go_workspace/src/github.com/knmkr/wgx
+    - ln -s ~/wgx ~/.go_workspace/src/github.com/knmkr
     - go build -v ./...
 
 test:
