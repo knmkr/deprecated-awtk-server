@@ -1,0 +1,14 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "wgx\n\n\n[WIP]", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#wgx", 
+            "text": "[WIP]", 
+            "title": "wgx"
+        }
+    ]
+}
