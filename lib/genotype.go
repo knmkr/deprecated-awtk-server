@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
-	"strconv"
 
 	"github.com/brentp/bix"
 	"github.com/brentp/irelate/interfaces"
@@ -19,43 +18,42 @@ type Genotype struct {
 	Alleles    []string `json:"alleles"`
 }
 
+// FIXME
 func check(e error) {
 	if e != nil {
 		log.Fatal(e)
 	}
 }
 
-type loc struct {
+type Location struct {
 	chrom string
 	start int
 	end   int
 }
 
-func (s loc) Chrom() string {
+func (s Location) Chrom() string {
 	return s.chrom
 }
-func (s loc) Start() uint32 {
+func (s Location) Start() uint32 {
 	return uint32(s.start)
 }
-func (s loc) End() uint32 {
+func (s Location) End() uint32 {
 	return uint32(s.end)
 }
 
-func GetGenotype(f string, chrom string, startPos string, endPos string) []byte {
+func NewLocation(chrom string, start int, end int) Location {
+	return Location{chrom, start, end}
+}
+
+func QueryGenotypes(f string, loc Location) []byte {
+	var response []byte
+
 	tbx, err := bix.New(f)
 	check(err)
 
-	s, err := strconv.Atoi(startPos)
-	check(err)
-
-	e, err := strconv.Atoi(endPos)
-	check(err)
-
-	var response []byte
-
 	vr := tbx.VReader
 
-	vals, _ := tbx.Query(loc{chrom, s, e})
+	vals, _ := tbx.Query(loc)
 
 	for {
 		v, err := vals.Next()

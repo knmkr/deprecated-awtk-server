@@ -1,9 +1,16 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
 )
+
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stderr)
+}
 
 func main() {
 	app := cli.NewApp()
