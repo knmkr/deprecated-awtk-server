@@ -13,7 +13,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-func doRunServer(c *cli.Context) {
+func doRunServer(c *cli.Context) error {
 	addr := c.String("addr")
 	if addr == "" {
 		addr = "localhost:1323"
@@ -27,6 +27,8 @@ func doRunServer(c *cli.Context) {
 	// e.GET("/", Redirect())
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
 	e.Run(standard.New(addr))
+
+	return nil
 }
 
 func getGenotypes(c echo.Context) error {
