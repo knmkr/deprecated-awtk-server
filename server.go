@@ -37,7 +37,7 @@ func getGenotypes(c echo.Context) error {
 
 	queries := strings.Split(c.QueryParam("locations"), ",")
 
-	q := strings.Split(queries[0], ":")
+	q := strings.Split(queries[0], "-")
 
 	s, err := strconv.Atoi(q[1])
 	if err != nil {
