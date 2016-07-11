@@ -1,2 +1,12 @@
-wgx
+# OSX
+.DS_Store
+
+# docs
 site/
+
+# node.js
+node_modules/
+
+# executable
+wgx
+wgx-darwin-x64/
