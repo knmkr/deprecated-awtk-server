@@ -1,3 +1,6 @@
+var path = require("path");
+var log = require('electron-log');
+
 const electron = require('electron');
 // Module to control application life.
 const {app} = electron;
@@ -19,7 +22,7 @@ function createWindow() {
     win.loadURL(`file://${__dirname}/index.html`);
 
                 // Open the DevTools.
-                // win.webContents.openDevTools();
+                win.webContents.openDevTools();
 
                 // Emitted when the window is closed.
                 win.on('closed', () => {
@@ -56,17 +59,23 @@ function createWindow() {
     // code. You can also put them in separate files and require them here.
 
     // TODO: close safely
-    var spawn = require('child_process').spawn,
-        runserver = spawn('script/wgx', ['runserver', addr]);
+    var child_process = require('child_process')
+    runserver = child_process.execFile(path.join(__dirname, 'script', 'wgx'), ['runserver', addr], {cwd: __dirname});
+    log.info(runserver);
 
     runserver.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+        log.info('stdout: ' + data);
     });
 
     runserver.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+        log.info('stderr: ' + data);
     });
 
     runserver.on('close', function (code) {
-        console.log('child process exited with code ' + code);
+        log.info('child process exited with code ' + code);
+    });
+
+    //
+    process.on('uncaughtException', function (err) {
+        log.error('Caught exception: ' + err);
     });
