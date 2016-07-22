@@ -3,14 +3,12 @@ package wgx
 import (
 	"bytes"
 	"encoding/json"
-	"log"
-
+	log "github.com/Sirupsen/logrus"
 	"github.com/brentp/bix"
 	"github.com/brentp/irelate/interfaces"
 )
 
 type Genotype struct {
-	SampleName string   `json:"sampleName"`
 	Chrom      string   `json:"chrom"`
 	Position   int      `json:"position"`
 	Id         string   `json:"id"`
@@ -18,11 +16,14 @@ type Genotype struct {
 	Alleles    []string `json:"alleles"`
 }
 
-// FIXME
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
+type Genotypes struct {
+	SampleName string      `json:"sampleName"`
+	Genotypes  []Genotype  `json:"genotypes"`
+}
+
+func (genotypes *Genotypes) AddGenotype(genotype Genotype) []Genotype {
+	genotypes.Genotypes = append(genotypes.Genotypes, genotype)
+	return genotypes.Genotypes
 }
 
 type Location struct {
@@ -45,21 +46,39 @@ func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
 
-func QueryGenotypes(f string, loc Location) []byte {
-	var response []byte
+// FIXME
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
+	}
+}
+
+func QueryGenotypes(f string, locs []Location) []byte {
+	var genotypes Genotypes
+	var sampleName string
 
 	tbx, err := bix.New(f)
 	check(err)
 
 	vr := tbx.VReader
 
-	vals, _ := tbx.Query(loc)
+	for i := range locs {
+		vals, _ := tbx.Query(locs[i])
 
-	for {
+		// FIXME: Assert one record for one query
 		v, err := vals.Next()
 		if err != nil {
+			// FIXME
 			break
 		}
+
+		// Parse sample names
+		line := []byte(v.(interfaces.IVariant).String())
+		fields := makeFields(line)
+		variant := vr.Parse(fields)
+		vr.Header.ParseSamples(variant)
+		sampleNames := vr.Header.SampleNames
+		samples := variant.Samples
 
 		chrom := v.(interfaces.IPosition).Chrom()
 		pos := v.(interfaces.IPosition).End()
@@ -73,18 +92,10 @@ func QueryGenotypes(f string, loc Location) []byte {
 		alleles = append(alleles, ref)
 		alleles = append(alleles, alt...)
 
-		// Parse samples
-		line := []byte(v.(interfaces.IVariant).String())
-		fields := makeFields(line)
-		variant := vr.Parse(fields)
-		vr.Header.ParseSamples(variant)
-		sampleNames := vr.Header.SampleNames
-		samples := variant.Samples
-
 		// Get genotypes
 		idx := 0
 		sample := samples[idx]
-		sampleName := sampleNames[idx]
+		sampleName = sampleNames[idx]
 
 		genotype := []string{}
 		gt := sample.GT
@@ -92,20 +103,14 @@ func QueryGenotypes(f string, loc Location) []byte {
 			genotype = append(genotype, alleles[gt[j]])
 		}
 
-		// jsonify
-		record := &Genotype{
-			SampleName: sampleName,
-			Chrom:      chrom,
-			Position:   int(pos),
-			Id:         id_,
-			Genotype:   genotype,
-			Alleles:    alleles}
-		response, err = json.Marshal(record)
-
+		genotypes.AddGenotype(Genotype{chrom, int(pos), id_, genotype, alleles})
 	}
+
 	tbx.Close()
 
-	// FIXME
+ 	genotypes.SampleName = sampleName
+	response, err := json.Marshal(genotypes)
+
 	return response
 }
 

@@ -11,3 +11,7 @@ npm-debug.log*
 # executable
 wgx
 wgx-darwin-x64/
+
+#
+tmp/
+data/

@@ -25,30 +25,37 @@ func doRunServer(c *cli.Context) {
 	e.Use(middleware.Logger())
 
 	// e.GET("/", Redirect())
+	// e.GET("/v1/genomes/:genome_id", getGenomes)
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
 	e.Run(standard.New(addr))
 }
 
+// func postGenomes(c echo.Context) error {
+// }
+
+// func getGenomes(c echo.Context) error {
+// }
+
 func getGenotypes(c echo.Context) error {
+	// TODO: get genome id
 	// id := c.Param("genome_id")
 	fileName := "test/data/test.vcf42.vcf.gz"
 
+	// TODO: ?ids=<snp_id, ...>
+
 	queries := strings.Split(c.QueryParam("locations"), ",")
 
-	q := strings.Split(queries[0], "-")
-
-	s, err := strconv.Atoi(q[1])
-	if err != nil {
-		return c.String(http.StatusBadRequest, "")
+	var locs []wgx.Location
+	for i := range queries {
+		q := strings.Split(queries[i], "-")
+		pos, err := strconv.Atoi(q[1])
+		if err != nil {
+			return c.String(http.StatusBadRequest, "")
+		}
+		loc := wgx.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
+		locs = append(locations, loc)
 	}
-
-	e, err := strconv.Atoi(q[1])
-	if err != nil {
-		return c.String(http.StatusBadRequest, "")
-	}
-
-	location := wgx.NewLocation(q[0], s, e+1)
-	record := wgx.QueryGenotypes(fileName, location)
+	record := wgx.QueryGenotypes(fileName, locs)
 
 	return c.String(http.StatusOK, string(record))
 }
