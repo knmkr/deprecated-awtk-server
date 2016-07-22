@@ -48,14 +48,22 @@ func getGenotypes(c echo.Context) error {
 	var locs []wgx.Location
 	for i := range queries {
 		q := strings.Split(queries[i], "-")
+		if len(q) != 2 {
+			return c.String(http.StatusBadRequest, "")
+		}
+
 		pos, err := strconv.Atoi(q[1])
 		if err != nil {
 			return c.String(http.StatusBadRequest, "")
 		}
 		loc := wgx.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
-		locs = append(locations, loc)
+		locs = append(locs, loc)
 	}
-	record := wgx.QueryGenotypes(fileName, locs)
+
+	record, err := wgx.QueryGenotypes(fileName, locs)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "")
+	}
 
 	return c.String(http.StatusOK, string(record))
 }

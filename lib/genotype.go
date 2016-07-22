@@ -3,7 +3,7 @@ package wgx
 import (
 	"bytes"
 	"encoding/json"
-	log "github.com/Sirupsen/logrus"
+	// log "github.com/Sirupsen/logrus"
 	"github.com/brentp/bix"
 	"github.com/brentp/irelate/interfaces"
 )
@@ -46,19 +46,16 @@ func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
 
-// FIXME
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
-}
 
-func QueryGenotypes(f string, locs []Location) []byte {
+
+func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 	var genotypes Genotypes
 	var sampleName string
 
 	tbx, err := bix.New(f)
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 
 	vr := tbx.VReader
 
@@ -68,8 +65,7 @@ func QueryGenotypes(f string, locs []Location) []byte {
 		// FIXME: Assert one record for one query
 		v, err := vals.Next()
 		if err != nil {
-			// FIXME
-			break
+			return nil, err
 		}
 
 		// Parse sample names
@@ -110,8 +106,11 @@ func QueryGenotypes(f string, locs []Location) []byte {
 
  	genotypes.SampleName = sampleName
 	response, err := json.Marshal(genotypes)
+	if err != nil {
+		return nil, err
+	}
 
-	return response
+	return response, nil
 }
 
 // copied from github.com/brentp/bix
