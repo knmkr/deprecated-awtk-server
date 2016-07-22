@@ -9,16 +9,16 @@ import (
 )
 
 type Genotype struct {
-	Chrom      string   `json:"chrom"`
-	Position   int      `json:"position"`
-	Id         string   `json:"id"`
-	Genotype   []string `json:"genotype"`
-	Alleles    []string `json:"alleles"`
+	Chrom    string   `json:"chrom"`
+	Position int      `json:"position"`
+	Id       string   `json:"id"`
+	Genotype []string `json:"genotype"`
+	Alleles  []string `json:"alleles"`
 }
 
 type Genotypes struct {
-	SampleName string      `json:"sampleName"`
-	Genotypes  []Genotype  `json:"genotypes"`
+	SampleName string     `json:"sampleName"`
+	Genotypes  []Genotype `json:"genotypes"`
 }
 
 func (genotypes *Genotypes) AddGenotype(genotype Genotype) []Genotype {
@@ -45,8 +45,6 @@ func (s Location) End() uint32 {
 func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
-
-
 
 func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 	var genotypes Genotypes
@@ -104,7 +102,7 @@ func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 
 	tbx.Close()
 
- 	genotypes.SampleName = sampleName
+	genotypes.SampleName = sampleName
 	response, err := json.Marshal(genotypes)
 	if err != nil {
 		return nil, err
