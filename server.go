@@ -25,20 +25,41 @@ func doRunServer(c *cli.Context) {
 	e.Use(middleware.Logger())
 
 	// e.GET("/", Redirect())
-	// e.GET("/v1/genomes/:genome_id", getGenomes)
+	e.POST("/v1/genomes", postGenomes)
+	e.GET("/v1/genomes", getGenomes)
+	// e.GET("/v1/genomes/:genome_id", getGenome)
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
+
 	e.Run(standard.New(addr))
 }
 
-// func postGenomes(c echo.Context) error {
-// }
+// $ curl -X POST --data "filePath=/path/to/genome.vcf.gz" "http://localhost:1323/v1/genomes"
+func postGenomes(c echo.Context) error {
+	g := new(wgx.Genome)
+	if err := c.Bind(g); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
-// func getGenomes(c echo.Context) error {
+	genomes, err := wgx.CreateGenomes(g.FilePath)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusCreated, genomes)
+}
+
+func getGenomes(c echo.Context) error {
+	// TODO: get all genomes from db
+	return c.JSON(http.StatusOK, id)
+}
+
+// func getGenome(c echo.Context) error {
 // }
 
 func getGenotypes(c echo.Context) error {
 	// TODO: get genome id
 	// id := c.Param("genome_id")
+
 	fileName := "test/data/test.vcf42.vcf.gz"
 
 	// TODO: ?ids=<snp_id, ...>
