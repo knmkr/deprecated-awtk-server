@@ -50,7 +50,7 @@ func postGenomes(c echo.Context) error {
 
 func getGenomes(c echo.Context) error {
 	// TODO: get all genomes from db
-	return c.JSON(http.StatusOK, id)
+	return c.JSON(http.StatusOK, "")
 }
 
 // func getGenome(c echo.Context) error {
