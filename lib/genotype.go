@@ -60,44 +60,62 @@ func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 	for i := range locs {
 		vals, _ := tbx.Query(locs[i])
 
-		// FIXME: Assert one record for one query
-		v, err := vals.Next()
-		if err != nil {
-			return nil, err
+		for {
+			v, err := vals.Next()
+
+			if err != nil {
+				break
+			}
+
+			// Parse sample names
+			line := []byte(v.(interfaces.IVariant).String())
+			fields := makeFields(line)
+			variant := vr.Parse(fields)
+			vr.Header.ParseSamples(variant)
+			sampleNames := vr.Header.SampleNames
+			samples := variant.Samples
+
+			chrom := v.(interfaces.IPosition).Chrom()
+			pos := v.(interfaces.IPosition).End()
+			id_ := v.(interfaces.IVariant).Id()
+			// info_ := v.(interfaces.IVariant).Info()
+
+			// Parse alleles
+			ref := v.(interfaces.IVariant).Ref()
+			alt := v.(interfaces.IVariant).Alt()
+			alleles := []string{}
+			alleles = append(alleles, ref)
+
+			if (len(alt) == 1 && alt[0] == ".") {
+				// no ALTs (= ALT is ["."])
+			} else {
+				alleles = append(alleles, alt...)
+			}
+
+			// Get genotypes of 1st sample
+			idx := 0
+			sample := samples[idx]
+			sampleName = sampleNames[idx]
+
+			genotype := []string{}
+			gt := sample.GT
+
+			for j := range gt {
+				if gt[j] == -1 {
+					// no GTs (= GT is missing value: -1)
+					genotype = append(genotype, ".")
+				} else {
+					genotype = append(genotype, alleles[gt[j]])
+				}
+
+			}
+
+			genotypes.AddGenotype(Genotype{chrom,
+				int(pos),
+				id_,
+				genotype,
+				alleles})
 		}
-
-		// Parse sample names
-		line := []byte(v.(interfaces.IVariant).String())
-		fields := makeFields(line)
-		variant := vr.Parse(fields)
-		vr.Header.ParseSamples(variant)
-		sampleNames := vr.Header.SampleNames
-		samples := variant.Samples
-
-		chrom := v.(interfaces.IPosition).Chrom()
-		pos := v.(interfaces.IPosition).End()
-		id_ := v.(interfaces.IVariant).Id()
-		// info_ := v.(interfaces.IVariant).Info()
-
-		// Parse alleles
-		ref := v.(interfaces.IVariant).Ref()
-		alt := v.(interfaces.IVariant).Alt()
-		alleles := []string{}
-		alleles = append(alleles, ref)
-		alleles = append(alleles, alt...)
-
-		// Get genotypes
-		idx := 0
-		sample := samples[idx]
-		sampleName = sampleNames[idx]
-
-		genotype := []string{}
-		gt := sample.GT
-		for j := range gt {
-			genotype = append(genotype, alleles[gt[j]])
-		}
-
-		genotypes.AddGenotype(Genotype{chrom, int(pos), id_, genotype, alleles})
 	}
 
 	tbx.Close()
