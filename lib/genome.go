@@ -17,9 +17,9 @@ func (err *GenomeError) Error() string {
 }
 
 type Genome struct {
-	FilePath  string `json:"filePath" form:"filePath"`
+	FilePath    string `json:"filePath" form:"filePath"`
 	SampleName  string `json:"sampleName"`
-	SampleIndex  int `json:"sampleIndex"`
+	SampleIndex int    `json:"sampleIndex"`
 }
 
 func CreateGenomes(filePath string) ([]Genome, error) {

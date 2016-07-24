@@ -86,7 +86,7 @@ func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 			alleles := []string{}
 			alleles = append(alleles, ref)
 
-			if (len(alt) == 1 && alt[0] == ".") {
+			if len(alt) == 1 && alt[0] == "." {
 				// no ALTs (= ALT is ["."])
 			} else {
 				alleles = append(alleles, alt...)
