@@ -30,7 +30,7 @@ indexed search, etc. |   |
 E.g.
 
 ```bash
-$ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "http://localhost:1323/v1/genomes"
+$ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "localhost:1323/v1/genomes"
 ```
 
 ### GET /v1/genomes/\<id\>/genotypes
