@@ -23,7 +23,7 @@ indexed search, etc. |   |
        +--------------------------------+
 ```
 
-## Endpoints
+## API Endpoints
 
 ### GET /v1/genomes/\<id\>/genotypes
 
