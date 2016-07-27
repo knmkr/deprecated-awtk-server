@@ -14,6 +14,8 @@ import (
 )
 
 func doRunServer(c *cli.Context) {
+	wgx.InitDatabase()
+
 	addr := c.String("addr")
 	if addr == "" {
 		addr = "localhost:1323"
