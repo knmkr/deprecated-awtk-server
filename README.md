@@ -22,3 +22,34 @@ indexed search, etc. |   |
        |        your desktop app        |
        +--------------------------------+
 ```
+
+## Endpoints
+
+### GET /v1/genomes/\<id\>/genotypes
+
+E.g.
+
+```bash
+$ curl "localhost:1323/v1/genomes/1/genotypes?locations=20-14370"
+```
+
+```json
+{
+  "sampleName": "NA00001",
+  "genotypes": [
+    {
+      "chrom": "20",
+      "position": 14370,
+      "id": "rs6054257",
+      "genotype": [
+        "G",
+        "G"
+      ],
+      "alleles": [
+        "G",
+        "A"
+      ]
+    }
+  ]
+}
+```
