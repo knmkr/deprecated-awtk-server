@@ -46,7 +46,7 @@ func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
 
-func QueryGenotypes(f string, locs []Location) ([]byte, error) {
+func QueryGenotypes(f string, idx int, locs []Location) ([]byte, error) {
 	var genotypes Genotypes
 	var sampleName string
 
@@ -93,7 +93,6 @@ func QueryGenotypes(f string, locs []Location) ([]byte, error) {
 			}
 
 			// Get genotypes of 1st sample
-			idx := 0
 			sample := samples[idx]
 			sampleName = sampleNames[idx]
 

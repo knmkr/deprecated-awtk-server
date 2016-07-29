@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -26,16 +27,15 @@ func doRunServer(c *cli.Context) {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
-	// e.GET("/", Redirect())
 	e.POST("/v1/genomes", postGenomes)
-	e.GET("/v1/genomes", getGenomes)
-	// e.GET("/v1/genomes/:genome_id", getGenome)
+	e.GET("/v1/genomes/:genome_id", getGenomes)
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
 
 	e.Run(standard.New(addr))
 }
 
-// $ curl -X POST --data "filePath=/path/to/genome.vcf.gz" "http://localhost:1323/v1/genomes"
+// postGenomes creates genomes records by filePath
+// $ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "http://localhost:1323/v1/genomes"
 func postGenomes(c echo.Context) error {
 	g := new(wgx.Genome)
 	if err := c.Bind(g); err != nil {
@@ -50,21 +50,33 @@ func postGenomes(c echo.Context) error {
 	return c.JSON(http.StatusCreated, genomes)
 }
 
+// getGenomes returns genome record by id
 func getGenomes(c echo.Context) error {
-	// TODO: get all genomes from db
-	return c.JSON(http.StatusOK, "")
+	id, err := strconv.Atoi(c.Param("genome_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	genome, err := wgx.GetGenome(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusOK, genome)
 }
 
-// func getGenome(c echo.Context) error {
-// }
-
+// getGenotypes returns genotypes records of genome by locations
+// $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20-14370"
 func getGenotypes(c echo.Context) error {
-	// TODO: get genome id
-	// id := c.Param("genome_id")
+	id, err := strconv.Atoi(c.Param("genome_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
-	fileName := "test/data/test.vcf42.vcf.gz"
-
-	// TODO: ?ids=<snp_id, ...>
+	genome, err := wgx.GetGenome(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
 	queries := strings.Split(c.QueryParam("locations"), ",")
 
@@ -72,21 +84,22 @@ func getGenotypes(c echo.Context) error {
 	for i := range queries {
 		q := strings.Split(queries[i], "-")
 		if len(q) != 2 {
-			return c.String(http.StatusBadRequest, "")
+			err = &wgx.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
+			return c.JSON(http.StatusBadRequest, err)
 		}
 
 		pos, err := strconv.Atoi(q[1])
 		if err != nil {
-			return c.String(http.StatusBadRequest, "")
+			return c.JSON(http.StatusBadRequest, err)
 		}
 		loc := wgx.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
 		locs = append(locs, loc)
 	}
 
-	record, err := wgx.QueryGenotypes(fileName, locs)
+	genotypes, err := wgx.QueryGenotypes(genome.FilePath, genome.SampleIndex, locs)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "")
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	return c.String(http.StatusOK, string(record))
+	return c.String(http.StatusOK, string(genotypes))
 }

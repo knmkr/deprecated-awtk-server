@@ -68,17 +68,20 @@ func CreateGenomes(filePath string) ([]Genome, error) {
 	return genomes, nil
 }
 
-// func GetGenomes(filePath string) ([]Genome, error) {
-// 	//
+func GetGenome(genomeId int) (*Genome, error) {
+	var genome *Genome
 
-// 	var genomes []Genome
-// 	_, err = dbmap.Select(&genomes, "SELECT * FROM genome ORDER BY id")
-// 	if err != nil {
-// 		return nil, &GenomeError{fmt.Sprintf("%s", err)}
-// 	}
+	db, dbmap, err := GetDatabaseConnection()
+	if err != nil {
+		return nil, &GenomeError{fmt.Sprintf("%s", err)}
+	}
+	defer db.Close()
+	defer dbmap.Db.Close()
 
-// 	for _, g := range genomes {
-// 		fmt.Printf("%d, %s, %s, %s\n", g.Id, g.FilePath, g.SampleName, g.SampleIndex)
-// 	}
+	err = dbmap.SelectOne(&genome, "SELECT * FROM genome WHERE id = ?", genomeId)
+	if err != nil {
+		return nil, &GenomeError{fmt.Sprintf("%s", err)}
+	}
 
-// }
+	return genome, nil
+}
