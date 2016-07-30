@@ -5,22 +5,22 @@ whole genome query engine for desktop apps
 [![CircleCI](https://circleci.com/gh/knmkr/wgx.svg?style=svg)](https://circleci.com/gh/knmkr/wgx) 
 
 ```
-       +--------------------------------+
-       |        your desktop app        |
-       +-------------+---+--------------+
-                     ^   |
-    genotype as json |   | query via API
-                     |   v
-       +-------------+---+--------------+
-       |              wgx               |
-       |         (query engine)         |
-       +-------------+---+--------------+
-                     ^   |
-       genotype data |   | indexed search
-                     |   v
-       +-------------+---+--------------+
-       |       whole genome data        |
-       +--------------------------------+
+                         +--------------------------------+
+                         |        your desktop app        |
+                         +-------------+---+--------------+
+                                       |   ^
+                         query via API |   | data as json
+                                       v   |
+       +-------------------------------+---+---------------------------------+
+       |                                wgx                                  |
+       |                           (query engine)                            |
+       +-------------+---+--------------------------------+---+--------------+
+                     |   ^                                |   ^
+      indexed search |   | genotype data            query |   | evidence data
+                     v   |                                v   |
+       +-------------+---+--------------+   +-------------+---+--------------+  
+       |       whole genome data        |   |       evidence database        |
+       +--------------------------------+   +--------------------------------+
 ```
 
 ## API Endpoints
