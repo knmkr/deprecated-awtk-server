@@ -78,3 +78,42 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20-14370"
   ]
 }
 ```
+
+### GET /v1/evidences/\<id\>
+
+```bash
+$ curl "localhost:1323/v1/evidences/1"
+```
+
+```json
+{
+  "id": 1,
+  "phenotype": "Coffe consumption",
+  "model": "additive",
+  "unit": "mg/day decrease",
+  "population": "European",
+  "variants": [
+    {
+      "name": "effective homo",
+      "criteria": "rs4410790(T;T)",
+      "effectSize": 0.3,
+      "Effect": "",
+      "reference": "https://www.ebi.ac.uk/gwas/search?query=rs4410790"
+    },
+    {
+      "name": "effective hetero",
+      "criteria": "rs4410790(T;C)",
+      "effectSize": 0.15,
+      "Effect": "",
+      "reference": "https://www.ebi.ac.uk/gwas/search?query=rs4410790"
+    },
+    {
+      "name": "non-effective homo",
+      "criteria": "rs4410790(C;C)",
+      "effectSize": 0,
+      "Effect": "",
+      "reference": "https://www.ebi.ac.uk/gwas/search?query=rs4410790"
+    }
+  ]
+}
+```
