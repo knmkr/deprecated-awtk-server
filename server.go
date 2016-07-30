@@ -30,6 +30,7 @@ func doRunServer(c *cli.Context) {
 	e.POST("/v1/genomes", postGenomes)
 	e.GET("/v1/genomes/:genome_id", getGenomes)
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
+	e.GET("/v1/evidences/:evidence_id", getEvidences)
 
 	e.Run(standard.New(addr))
 }
@@ -102,4 +103,19 @@ func getGenotypes(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, string(genotypes))
+}
+
+//
+func getEvidences(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("evidence_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	evidence, err := wgx.GetEvidence(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.String(http.StatusOK, string(evidence))
 }

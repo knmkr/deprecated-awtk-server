@@ -22,8 +22,17 @@ func InitDatabase() {
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
 	defer dbmap.Db.Close()
 
+	dbmap.AddTableWithName(Evidence{}, "evidences").SetKeys(true, "Id")
+	dbmap.AddTableWithName(Variant{}, "variants").SetKeys(true, "Id")
+	dbmap.DropTables()
+
 	dbmap.AddTableWithName(Genome{}, "genomes").SetKeys(true, "Id")
 	err = dbmap.CreateTablesIfNotExists()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = InitEvidence(dbmap)
 	if err != nil {
 		log.Fatal(err)
 	}
