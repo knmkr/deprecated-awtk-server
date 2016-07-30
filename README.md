@@ -6,20 +6,20 @@ whole genome query engine for desktop apps
 
 ```
        +--------------------------------+
-       |       whole genome data        |
+       |        your desktop app        |
        +-------------+---+--------------+
                      ^   |
-indexed search, etc. |   |
+    genotype as json |   | query via API
                      |   v
        +-------------+---+--------------+
        |              wgx               |
        |         (query engine)         |
        +-------------+---+--------------+
                      ^   |
-       query via API |   | results as json
+       genotype data |   | indexed search
                      |   v
        +-------------+---+--------------+
-       |        your desktop app        |
+       |       whole genome data        |
        +--------------------------------+
 ```
 
