@@ -33,6 +33,23 @@ E.g.
 $ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "localhost:1323/v1/genomes"
 ```
 
+### GET /v1/genomes
+
+E.g.
+
+```bash
+$ curl "localhost:1323/v1/genomes/1"
+```
+
+```json
+{
+  "id": 1,
+  "filePath": "test/data/test.vcf41.vcf.gz",
+  "sampleName": "NA00001",
+  "sampleIndex": 0
+}
+```
+
 ### GET /v1/genomes/\<id\>/genotypes
 
 E.g.
@@ -48,7 +65,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20-14370"
     {
       "chrom": "20",
       "position": 14370,
-      "id": "rs6054257",
+      "snpId": "rs6054257",
       "genotype": [
         "G",
         "G"
