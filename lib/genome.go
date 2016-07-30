@@ -17,7 +17,7 @@ func (err *GenomeError) Error() string {
 }
 
 type Genome struct {
-	Id          int
+	Id          int    `json:"id"`
 	FilePath    string `json:"filePath" form:"filePath"`
 	SampleName  string `json:"sampleName"`
 	SampleIndex int    `json:"sampleIndex"`
@@ -78,7 +78,7 @@ func GetGenome(genomeId int) (*Genome, error) {
 	defer db.Close()
 	defer dbmap.Db.Close()
 
-	err = dbmap.SelectOne(&genome, "SELECT * FROM genome WHERE id = ?", genomeId)
+	err = dbmap.SelectOne(&genome, "SELECT * FROM genomes WHERE id = ?", genomeId)
 	if err != nil {
 		return nil, &GenomeError{fmt.Sprintf("%s", err)}
 	}

@@ -11,7 +11,7 @@ import (
 type Genotype struct {
 	Chrom    string   `json:"chrom"`
 	Position int      `json:"position"`
-	Id       string   `json:"id"`
+	SnpId    string   `json:"snpId"`
 	Genotype []string `json:"genotype"`
 	Alleles  []string `json:"alleles"`
 }
@@ -77,8 +77,8 @@ func QueryGenotypes(f string, idx int, locs []Location) ([]byte, error) {
 
 			chrom := v.(interfaces.IPosition).Chrom()
 			pos := v.(interfaces.IPosition).End()
-			id_ := v.(interfaces.IVariant).Id()
-			// info_ := v.(interfaces.IVariant).Info()
+			snpId := v.(interfaces.IVariant).Id()
+			// info := v.(interfaces.IVariant).Info()
 
 			// Parse alleles
 			ref := v.(interfaces.IVariant).Ref()
@@ -111,7 +111,7 @@ func QueryGenotypes(f string, idx int, locs []Location) ([]byte, error) {
 
 			genotypes.AddGenotype(Genotype{chrom,
 				int(pos),
-				id_,
+				snpId,
 				genotype,
 				alleles})
 		}

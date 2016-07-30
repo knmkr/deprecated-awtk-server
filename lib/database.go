@@ -22,7 +22,7 @@ func InitDatabase() {
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
 	defer dbmap.Db.Close()
 
-	dbmap.AddTableWithName(Genome{}, "genome").SetKeys(true, "Id")
+	dbmap.AddTableWithName(Genome{}, "genomes").SetKeys(true, "Id")
 	err = dbmap.CreateTablesIfNotExists()
 	if err != nil {
 		log.Fatal(err)
@@ -35,7 +35,7 @@ func GetDatabaseConnection() (*sql.DB, *gorp.DbMap, error) {
 		return nil, nil, &GenomeError{fmt.Sprintf("%s", err)}
 	}
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-	dbmap.AddTableWithName(Genome{}, "genome").SetKeys(true, "Id")
+	dbmap.AddTableWithName(Genome{}, "genomes").SetKeys(true, "Id")
 
 	return db, dbmap, nil
 }
