@@ -33,7 +33,7 @@ E.g.
 $ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "localhost:1323/v1/genomes"
 ```
 
-### GET /v1/genomes
+### GET /v1/genomes/\<id\>
 
 E.g.
 
