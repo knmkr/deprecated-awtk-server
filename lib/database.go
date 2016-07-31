@@ -1,4 +1,4 @@
-package wgx
+package awtk
 
 import (
 	"database/sql"
@@ -10,7 +10,7 @@ import (
 
 const (
 	// FIXME
-	DbFile = "wgx.sqlite3"
+	DbFile = "awtk.sqlite3"
 )
 
 func InitDatabase() {

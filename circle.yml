@@ -1,8 +1,8 @@
 dependencies:
   override:
     - go get -t -d -v ./...
-    - rm -rf ~/.go_workspace/src/github.com/knmkr/wgx
-    - ln -s ~/wgx ~/.go_workspace/src/github.com/knmkr
+    - rm -rf ~/.go_workspace/src/github.com/AWAKENS-dev/awtk
+    - ln -s ~/awtk ~/.go_workspace/src/github.com/AWAKENS-dev
     - go build -v ./...
 
 test:

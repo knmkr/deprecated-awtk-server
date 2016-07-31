@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AWAKENS-dev/awtk/lib"
 	log "github.com/Sirupsen/logrus"
-	"github.com/knmkr/wgx/lib"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/echo/middleware"
@@ -15,14 +15,14 @@ import (
 )
 
 func doRunServer(c *cli.Context) {
-	wgx.InitDatabase()
+	awtk.InitDatabase()
 
 	addr := c.String("addr")
 	if addr == "" {
 		addr = "localhost:1323"
 	}
 
-	log.WithFields(log.Fields{"addr": addr, "wgx_version": Version}).Info("Running wgx server")
+	log.WithFields(log.Fields{"addr": addr, "awtk_version": Version}).Info("Running awtk server")
 
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -38,12 +38,12 @@ func doRunServer(c *cli.Context) {
 // postGenomes creates genomes records by filePath
 // $ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "http://localhost:1323/v1/genomes"
 func postGenomes(c echo.Context) error {
-	g := new(wgx.Genome)
+	g := new(awtk.Genome)
 	if err := c.Bind(g); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	genomes, err := wgx.CreateGenomes(g.FilePath)
+	genomes, err := awtk.CreateGenomes(g.FilePath)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -58,7 +58,7 @@ func getGenomes(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	genome, err := wgx.GetGenome(id)
+	genome, err := awtk.GetGenome(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -74,18 +74,18 @@ func getGenotypes(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	genome, err := wgx.GetGenome(id)
+	genome, err := awtk.GetGenome(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	queries := strings.Split(c.QueryParam("locations"), ",")
 
-	var locs []wgx.Location
+	var locs []awtk.Location
 	for i := range queries {
 		q := strings.Split(queries[i], "-")
 		if len(q) != 2 {
-			err = &wgx.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
+			err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
 			return c.JSON(http.StatusBadRequest, err)
 		}
 
@@ -93,11 +93,11 @@ func getGenotypes(c echo.Context) error {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}
-		loc := wgx.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
+		loc := awtk.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
 		locs = append(locs, loc)
 	}
 
-	genotypes, err := wgx.QueryGenotypes(genome.FilePath, genome.SampleIndex, locs)
+	genotypes, err := awtk.QueryGenotypes(genome.FilePath, genome.SampleIndex, locs)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -112,7 +112,7 @@ func getEvidences(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	evidence, err := wgx.GetEvidence(id)
+	evidence, err := awtk.GetEvidence(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}

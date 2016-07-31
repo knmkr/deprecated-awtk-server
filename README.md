@@ -2,7 +2,7 @@
 
 AWAKENS toolkit for whole genome desktop apps
 
-[![CircleCI](https://circleci.com/gh/knmkr/wgx.svg?style=svg)](https://circleci.com/gh/knmkr/wgx) 
+[![CircleCI](https://circleci.com/gh/AWAKENS-dev/awtk.svg?style=svg)](https://circleci.com/gh/AWAKENS-dev/awtk)
 
 ```
                          +--------------------------------+
@@ -17,7 +17,7 @@ AWAKENS toolkit for whole genome desktop apps
                      |   ^                                |   ^
       indexed search |   | genotype data            query |   | evidence data
                      v   |                                v   |
-       +-------------+---+--------------+   +-------------+---+--------------+  
+       +-------------+---+--------------+   +-------------+---+--------------+
        |       whole genome data        |   |       evidence database        |
        +--------------------------------+   +--------------------------------+
 ```

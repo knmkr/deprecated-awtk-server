@@ -1,4 +1,4 @@
-package wgx
+package awtk
 
 import (
 	"bytes"

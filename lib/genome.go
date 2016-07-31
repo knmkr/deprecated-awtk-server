@@ -1,4 +1,4 @@
-package wgx
+package awtk
 
 import (
 	"fmt"

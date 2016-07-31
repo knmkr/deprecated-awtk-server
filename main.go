@@ -14,7 +14,7 @@ func init() {
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "wgx"
+	app.Name = "awtk"
 	app.Version = Version
 	app.Usage = ""
 	app.Author = "knmkr"
