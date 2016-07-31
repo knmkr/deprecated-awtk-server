@@ -1,6 +1,6 @@
-# wgx
+# awtk
 
-whole genome query engine for desktop apps
+AWAKENS toolkit for whole genome desktop apps
 
 [![CircleCI](https://circleci.com/gh/knmkr/wgx.svg?style=svg)](https://circleci.com/gh/knmkr/wgx) 
 
@@ -12,8 +12,7 @@ whole genome query engine for desktop apps
                          query via API |   | data as json
                                        v   |
        +-------------------------------+---+---------------------------------+
-       |                                wgx                                  |
-       |                           (query engine)                            |
+       |                               awtk                                  |
        +-------------+---+--------------------------------+---+--------------+
                      |   ^                                |   ^
       indexed search |   | genotype data            query |   | evidence data
