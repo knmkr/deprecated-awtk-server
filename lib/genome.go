@@ -85,3 +85,21 @@ func GetGenome(genomeId int) (*Genome, error) {
 
 	return genome, nil
 }
+
+func GetGenomes() ([]Genome, error) {
+	var genomes []Genome
+
+	db, dbmap, err := GetDatabaseConnection()
+	if err != nil {
+		return nil, &GenomeError{fmt.Sprintf("%s", err)}
+	}
+	defer db.Close()
+	defer dbmap.Db.Close()
+
+	_, err = dbmap.Select(&genomes, "SELECT * FROM genomes")
+	if err != nil {
+		return nil, &GenomeError{fmt.Sprintf("%s", err)}
+	}
+
+	return genomes, nil
+}

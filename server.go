@@ -28,6 +28,7 @@ func doRunServer(c *cli.Context) {
 	e.Use(middleware.Logger())
 
 	e.POST("/v1/genomes", postGenomes)
+	e.GET("/v1/genomes", getGenomesList)
 	e.GET("/v1/genomes/:genome_id", getGenomes)
 	e.GET("/v1/genomes/:genome_id/genotypes", getGenotypes)
 	e.GET("/v1/evidences/:evidence_id", getEvidences)
@@ -49,6 +50,16 @@ func postGenomes(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, genomes)
+}
+
+// getGenomes returns all genome records
+func getGenomesList(c echo.Context) error {
+	genomes, err := awtk.GetGenomes()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusOK, genomes)
 }
 
 // getGenomes returns genome record by id
