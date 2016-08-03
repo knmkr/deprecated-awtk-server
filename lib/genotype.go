@@ -2,7 +2,6 @@ package awtk
 
 import (
 	"bytes"
-	"encoding/json"
 	// log "github.com/Sirupsen/logrus"
 	"github.com/brentp/bix"
 	"github.com/brentp/irelate/interfaces"
@@ -46,13 +45,13 @@ func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
 
-func QueryGenotypes(f string, idx int, locs []Location) ([]byte, error) {
+func QueryGenotypes(f string, idx int, locs []Location) (Genotypes, error) {
 	var genotypes Genotypes
 	var sampleName string
 
 	tbx, err := bix.New(f)
 	if err != nil {
-		return nil, err
+		return Genotypes{}, err
 	}
 
 	vr := tbx.VReader
@@ -120,12 +119,8 @@ func QueryGenotypes(f string, idx int, locs []Location) ([]byte, error) {
 	tbx.Close()
 
 	genotypes.SampleName = sampleName
-	response, err := json.Marshal(genotypes)
-	if err != nil {
-		return nil, err
-	}
 
-	return response, nil
+	return genotypes, nil
 }
 
 // copied from github.com/brentp/bix

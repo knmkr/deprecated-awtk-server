@@ -94,7 +94,7 @@ func getGenotypes(c echo.Context) error {
 
 	var locs []awtk.Location
 	for i := range queries {
-		q := strings.Split(queries[i], "-")
+		q := strings.Split(queries[i], ":")
 		if len(q) != 2 {
 			err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
 			return c.JSON(http.StatusBadRequest, err)
@@ -113,7 +113,7 @@ func getGenotypes(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	return c.String(http.StatusOK, string(genotypes))
+	return c.JSON(http.StatusOK, genotypes)
 }
 
 //
