@@ -78,7 +78,8 @@ func getGenomes(c echo.Context) error {
 }
 
 // getGenotypes returns genotypes records of genome by locations
-// $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20-14370"
+// $ curl "localhost:1323/v1/genomes/1/genotypes?locations=1:1,1:2,1:3"
+// $ curl "localhost:1323/v1/genomes/1/genotypes?range=1:1-100"
 func getGenotypes(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("genome_id"))
 	if err != nil {
@@ -90,21 +91,62 @@ func getGenotypes(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	queries := strings.Split(c.QueryParam("locations"), ",")
+	locationsParam := c.QueryParam("locations")
+	rangeParam := c.QueryParam("range")
+
+	if locationsParam != "" && rangeParam != "" {
+		err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid query param. Both locations and range params found.")}
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	if locationsParam == "" && rangeParam == "" {
+		err = &awtk.GenomeError{fmt.Sprintf("%s", "No valid query params found.")}
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
 	var locs []awtk.Location
-	for i := range queries {
-		q := strings.Split(queries[i], ":")
+
+	if locationsParam != "" {
+		// e.g. ?locations=1:1,1:2,1:3
+		queries := strings.Split(locationsParam, ",")
+		for i := range queries {
+			q := strings.Split(queries[i], ":")
+			if len(q) != 2 {
+				err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
+				return c.JSON(http.StatusBadRequest, err)
+			}
+
+			pos, err := strconv.Atoi(q[1])
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, err)
+			}
+			loc := awtk.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
+			locs = append(locs, loc)
+		}
+	} else if rangeParam != "" {
+		// e.g. ?range=1:1-100
+		query := rangeParam
+		q := strings.Split(query, ":")
 		if len(q) != 2 {
 			err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
 			return c.JSON(http.StatusBadRequest, err)
 		}
+		r := strings.Split(q[1], "-")
+		if len(r) != 2 {
+			err = &awtk.GenomeError{fmt.Sprintf("%s", "Invalid locations")}
+			return c.JSON(http.StatusBadRequest, err)
+		}
 
-		pos, err := strconv.Atoi(q[1])
+		start, err := strconv.Atoi(r[0])
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}
-		loc := awtk.NewLocation(q[0], pos-1, pos) // 1-based to 0-based
+		end, err := strconv.Atoi(r[1])
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+
+		loc := awtk.NewLocation(q[0], start-1, end) // 1-based to 0-based
 		locs = append(locs, loc)
 	}
 
