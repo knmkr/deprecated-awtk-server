@@ -70,7 +70,7 @@ $ curl "localhost:1323/v1/genomes/1"
 E.g.
 
 ```bash
-$ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:17330,20:17330"
+$ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
 ```
 
 ```json
@@ -79,14 +79,14 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:17330,20:17330"
   "genotypes": [
     {
       "chrom": "20",
-      "position": 17330,
-      "snpId": ".",
+      "position": 14370,
+      "snpId": "rs6054257",
       "genotype": [
-        "T",
-        "T"
+        "G",
+        "G"
       ],
       "alleles": [
-        "T",
+        "G",
         "A"
       ]
     },
