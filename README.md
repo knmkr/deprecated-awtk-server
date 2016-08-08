@@ -67,6 +67,8 @@ $ curl "localhost:1323/v1/genomes/1"
 
 ### GET /v1/genomes/\<id\>/genotypes
 
+#### ?locations=\<chrom\>:\<pos\>,\<chrom\>:\<pos\>,...
+
 E.g.
 
 ```bash
@@ -106,6 +108,8 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
   ]
 }
 ```
+
+#### ?range=\<chrom\>:\<pos\>-\<pos\>
 
 E.g.
 
