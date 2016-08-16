@@ -1,6 +1,6 @@
 # awtk
 
-embeddable RESTful API server for whole genome apps
+Embeddable RESTful API server for whole genome apps
 
 [![CircleCI](https://circleci.com/gh/AWAKENS-dev/awtk.svg?style=svg)](https://circleci.com/gh/AWAKENS-dev/awtk)
 
