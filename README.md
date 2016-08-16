@@ -4,6 +4,15 @@ embeddable RESTful API server for whole genome apps
 
 [![CircleCI](https://circleci.com/gh/AWAKENS-dev/awtk.svg?style=svg)](https://circleci.com/gh/AWAKENS-dev/awtk)
 
+## Motivation
+
+Although there are useful Bioinformatics tools to query genotype information from VCF genome data, such as vcftools, bcftools, or plink, it is not straightforward for **non-bioinformatics software engineers** to utilize them.
+
+So, we implemented `awtk`, an embeddable RESTful API server, which provides query APIs to retrieve genotype information from VCF in RESTful manner.
+
+
+## How it works
+
 ```
                          +--------------------------------+
                          |        your desktop app        |
@@ -22,9 +31,40 @@ embeddable RESTful API server for whole genome apps
        +--------------------------------+   +--------------------------------+
 ```
 
-## API Endpoints
+Once developers embed `awtk` server in their applications as a middleware, they could utilize genome data as JSON with simple API calls.
 
-### POST /v1/genomes
+`awtk` is implemented in Go, so it works on exisiting application platforms (Windows, OSX, Linux) thus developers could create apps on their desirable platforms including non-web based solutions.
+
+
+### Requirements
+
+Queries to retrieve genotype are indexed search by tabix. So, input VCFs need to be gzipped by [bzgip](https://github.com/samtools/htslib) and [tabix](http://www.htslib.org/doc/tabix.html) index files (.tbi) need to be created like VCFs distributed in 1000 Genomes Project: ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502
+
+**NOTE**: Sorry for inconvenience! We are planning to automate this preprocessing within `awtk`.
+
+
+## How to use
+
+Run following on your application
+
+```
+$ awtk runserver
+```
+
+Then call API endpoints at `localhost:1323`.
+
+If you want to change the port, run following
+
+```
+$ awtk runserver --addr localhost:8888
+```
+
+See example applicaiton for embedding and calling API in Electron (Node.js) at: https://github.com/AWAKENS-dev/example-app-electron
+
+
+### API Endpoints
+
+#### POST /v1/genomes
 
 E.g.
 
@@ -32,7 +72,7 @@ E.g.
 $ curl -X POST --data "filePath=test/data/test.vcf41.vcf.gz" "localhost:1323/v1/genomes"
 ```
 
-### GET /v1/genomes
+#### GET /v1/genomes
 
 E.g.
 
@@ -48,7 +88,7 @@ $ curl "localhost:1323/v1/genomes"
 ]
 ```
 
-### GET /v1/genomes/\<id\>
+#### GET /v1/genomes/\<id\>
 
 E.g.
 
@@ -65,9 +105,9 @@ $ curl "localhost:1323/v1/genomes/1"
 }
 ```
 
-### GET /v1/genomes/\<id\>/genotypes
+#### GET /v1/genomes/\<id\>/genotypes
 
-#### ?locations=\<chrom\>:\<pos\>,\<chrom\>:\<pos\>,...
+##### ?locations=\<chrom\>:\<pos\>,\<chrom\>:\<pos\>,...
 
 E.g.
 
@@ -109,7 +149,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
 }
 ```
 
-#### ?range=\<chrom\>:\<pos\>-\<pos\>
+##### ?range=\<chrom\>:\<pos\>-\<pos\>
 
 E.g.
 
@@ -152,7 +192,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?range=20:10000-20000"
 ```
 
 
-### GET /v1/evidences/\<id\>
+#### [WIP] GET /v1/evidences/\<id\>
 
 ```bash
 $ curl "localhost:1323/v1/evidences/1"
