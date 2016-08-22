@@ -191,10 +191,10 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?range=20:14370-14375&fmt=seq"
 
 ```json
 {
-  "Chrom": "20",
-  "Start": 14370,
-  "End": 14375,
-  "Reference": [
+  "chrom": "20",
+  "start": 14370,
+  "end": 14375,
+  "reference": [
     "G",
     "N",
     "N",
@@ -202,7 +202,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?range=20:14370-14375&fmt=seq"
     "N",
     "N"
   ],
-  "Haplotype1": [
+  "haplotype_1": [
     "G",
     "N",
     "N",
@@ -210,7 +210,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?range=20:14370-14375&fmt=seq"
     "N",
     "N"
   ],
-  "Haplotype2": [
+  "haplotype_2": [
     "G",
     "N",
     "N",
