@@ -8,11 +8,12 @@ import (
 )
 
 type Genotype struct {
-	Chrom    string   `json:"chrom"`
-	Position int      `json:"position"`
-	SnpId    string   `json:"snpId"`
-	Genotype []string `json:"genotype"`
-	Alleles  []string `json:"alleles"`
+	Chrom     string   `json:"chrom"`
+	Position  int      `json:"position"`
+	SnpId     string   `json:"snpId"`
+	Genotype  []string `json:"genotype"`
+	Alleles   []string `json:"alleles"`
+	Reference string   `json:"reference"`
 }
 
 type Genotypes struct {
@@ -121,7 +122,8 @@ func QueryGenotypes(f string, idx int, locs []Location) (Genotypes, error) {
 				int(pos),
 				snpId,
 				genotype,
-				alleles})
+				alleles,
+				ref})
 		}
 	}
 
@@ -153,6 +155,7 @@ func Genotypes2Sequence(gts Genotypes, locs []Location) (Sequence, error) {
 		genotype := genotypes[j]
 		gt := genotype.Genotype
 		idx := genotype.Position - start // 100 - 100 = 0, 101 - 100 = 1, ...
+		seq.Reference[idx] = genotype.Reference
 		seq.Haplotype1[idx] = gt[0]
 		seq.Haplotype2[idx] = gt[1]
 	}
