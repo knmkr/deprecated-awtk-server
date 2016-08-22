@@ -47,12 +47,12 @@ func NewLocation(chrom string, start int, end int) Location {
 }
 
 type Sequence struct {
-	Chrom      string   `json:chrom`
-	Start      int      `json:start`
-	End        int      `json:end`
-	Reference  []string `json:reference`
-	Haplotype1 []string `json:haplotype_1`
-	Haplotype2 []string `json:haplotype_2`
+	Chrom      string   `json:"chrom"`
+	Start      int      `json:"start"`
+	End        int      `json:"end"`
+	Reference  []string `json:"reference"`
+	Haplotype1 []string `json:"haplotype_1"`
+	Haplotype2 []string `json:"haplotype_2"`
 }
 
 func QueryGenotypes(f string, idx int, locs []Location) (Genotypes, error) {
