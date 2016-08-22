@@ -155,6 +155,16 @@ func getGenotypes(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
+	// &fmt=seq
+	fmtParam := c.QueryParam("fmt")
+	if rangeParam != "" && fmtParam == "seq" {
+		seq, err := awtk.Genotypes2Sequence(genotypes, locs)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+		return c.JSON(http.StatusOK, seq)
+	}
+
 	return c.JSON(http.StatusOK, genotypes)
 }
 

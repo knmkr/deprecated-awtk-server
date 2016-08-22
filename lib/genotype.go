@@ -45,6 +45,15 @@ func NewLocation(chrom string, start int, end int) Location {
 	return Location{chrom, start, end}
 }
 
+type Sequence struct {
+	Chrom      string   `json:chrom`
+	Start      int      `json:start`
+	End        int      `json:end`
+	Reference  []string `json:reference`
+	Haplotype1 []string `json:haplotype_1`
+	Haplotype2 []string `json:haplotype_2`
+}
+
 func QueryGenotypes(f string, idx int, locs []Location) (Genotypes, error) {
 	var genotypes Genotypes
 	var sampleName string
@@ -121,6 +130,33 @@ func QueryGenotypes(f string, idx int, locs []Location) (Genotypes, error) {
 	genotypes.SampleName = sampleName
 
 	return genotypes, nil
+}
+
+// Convert Genotypes to Sequence
+func Genotypes2Sequence(gts Genotypes, locs []Location) (Sequence, error) {
+	loc := locs[0]
+	chrom := loc.Chrom()
+	start := int(loc.Start()) + 1
+	end := int(loc.End())
+	seq := Sequence{chrom, start, end, []string{}, []string{}, []string{}}
+
+	// ["N", "N", ..., "N"]
+	for i := start; i <= end; i++ {
+		seq.Reference = append(seq.Reference, "N")
+		seq.Haplotype1 = append(seq.Haplotype1, "N")
+		seq.Haplotype2 = append(seq.Haplotype2, "N")
+	}
+
+	// ["G", "A", ..., "N"]
+	genotypes := gts.Genotypes
+	for j := range genotypes {
+		genotype := genotypes[j]
+		gt := genotype.Genotype
+		idx := genotype.Position - start // 100 - 100 = 0, 101 - 100 = 1, ...
+		seq.Haplotype1[idx] = gt[0]
+		seq.Haplotype2[idx] = gt[1]
+	}
+	return seq, nil
 }
 
 // copied from github.com/brentp/bix
