@@ -130,7 +130,8 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
       "alleles": [
         "G",
         "A"
-      ]
+      ],
+      "reference": "G"
     },
     {
       "chrom": "20",
@@ -143,7 +144,8 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
       "alleles": [
         "T",
         "A"
-      ]
+      ],
+      "reference": "T"
     }
   ]
 }
@@ -154,7 +156,7 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?locations=20:14370,20:17330"
 E.g.
 
 ```bash
-$ curl "localhost:1323/v1/genomes/1/genotypes?range=20:10000-20000"
+$ curl "localhost:1323/v1/genomes/1/genotypes?range=20:14370-14375"
 ```
 
 ```json
@@ -172,25 +174,52 @@ $ curl "localhost:1323/v1/genomes/1/genotypes?range=20:10000-20000"
       "alleles": [
         "G",
         "A"
-      ]
-    },
-    {
-      "chrom": "20",
-      "position": 17330,
-      "snpId": ".",
-      "genotype": [
-        "T",
-        "T"
       ],
-      "alleles": [
-        "T",
-        "A"
-      ]
+      "reference": "G"
     }
   ]
 }
 ```
 
+##### ?range=\<chrom\>:\<pos\>-\<pos\>&fmt=seq
+
+E.g.
+
+```bash
+$ curl "localhost:1323/v1/genomes/1/genotypes?range=20:14370-14375&fmt=seq"
+```
+
+```json
+{
+  "Chrom": "20",
+  "Start": 14370,
+  "End": 14375,
+  "Reference": [
+    "G",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N"
+  ],
+  "Haplotype1": [
+    "G",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N"
+  ],
+  "Haplotype2": [
+    "G",
+    "N",
+    "N",
+    "N",
+    "N",
+    "N"
+  ]
+}
+```
 
 #### [WIP] GET /v1/evidences/\<id\>
 
